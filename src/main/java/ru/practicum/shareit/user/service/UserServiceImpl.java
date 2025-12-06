@@ -3,8 +3,7 @@ package ru.practicum.shareit.user.service;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
-import ru.practicum.shareit.user.User;
-import ru.practicum.shareit.user.dto.UpdatedUser;
+import ru.practicum.shareit.user.model.User;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserMapper;
 
@@ -17,38 +16,41 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
     private final Map<Long, User> users = new HashMap<>();
 
-    public UserDto save(User user) {
+    public UserDto save(UserDto user) {
         if (isEmailUsed(user.getEmail())) {
             throw new ValidationException(String.format("Почта %s уже используется", user.getEmail()));
         }
 
-        user.setId(user.hashCode());
-        users.put(user.getId(), user);
+        user.setId((long) user.hashCode());
+        users.put(user.getId(), UserMapper.toUser(user));
 
-        if (users.containsKey(user.getId())) {
-            return UserMapper.toUserDto(users.get(user.getId()));
+        if (!users.containsKey(user.getId())) {
+            throw new ValidationException(String.format("Не удалось добавить пользователя: " + user));
         }
-        throw new ValidationException(String.format("Не удалось добавить пользователя: " + user));
+
+        return UserMapper.toUserDto(users.get(user.getId()));
     }
 
-    public UserDto update(UpdatedUser user, long userId) {
-        if (users.containsKey(userId)) {
-            if (isEmailUsed(user.email(), userId)) {
-                throw new ValidationException(String.format("Почта %s уже используется", user.email()));
-            }
-
-            users.put(userId, UserMapper.updateUserFields(users.get(userId), user));
-
-            return UserMapper.toUserDto(users.get(userId));
+    public UserDto update(UserDto user, long userId) {
+        if (!users.containsKey(userId)) {
+            throw new NotFoundException(String.format("Пользователь с id %d не найден", userId));
         }
-        throw new NotFoundException(String.format("Пользователь с id %d не найден", userId));
+
+        if (isEmailUsed(user.getEmail(), userId)) {
+            throw new ValidationException(String.format("Почта %s уже используется", user.getEmail()));
+        }
+
+        users.put(userId, UserMapper.updateUserFields(users.get(userId), user));
+
+        return UserMapper.toUserDto(users.get(userId));
     }
 
     public UserDto get(long userId) {
-        if (users.containsKey(userId)) {
-            return UserMapper.toUserDto(users.get(userId));
+        if (!users.containsKey(userId)) {
+            throw new NotFoundException(String.format("Пользователь с id %d не найден", userId));
         }
-        throw new NotFoundException(String.format("Пользователь с id %d не найден", userId));
+
+        return UserMapper.toUserDto(users.get(userId));
     }
 
     public List<UserDto> getAll() {

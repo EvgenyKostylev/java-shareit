@@ -6,7 +6,6 @@ import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.dto.ItemDto;
 import ru.practicum.shareit.item.dto.ItemMapper;
-import ru.practicum.shareit.item.dto.UpdatedItem;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.user.dto.UserMapper;
 import ru.practicum.shareit.user.service.UserServiceImpl;
@@ -18,41 +17,39 @@ import java.util.Map;
 
 @Service
 public class ItemServiceImpl implements ItemService {
+    private final UserServiceImpl userService;
+    private final Map<Long, Item> items;
+
     public ItemServiceImpl(@Autowired UserServiceImpl userService) {
         this.userService = userService;
         items = new HashMap<>();
     }
 
-    private final UserServiceImpl userService;
-    private final Map<Long, Item> items;
-
-    public ItemDto save(Item item, long userId) {
+    public ItemDto save(ItemDto item, long userId) {
         item.setOwner(UserMapper.toUser(userService.get(userId)));
-        item.setId(item.hashCode());
-        items.put(item.getId(), item);
+        item.setId((long) item.hashCode());
+        items.put(item.getId(), ItemMapper.toItem(item));
 
-        if (items.containsKey(item.getId())) {
-            return ItemMapper.toItemDto(items.get(item.getId()));
+        if (!items.containsKey(item.getId())) {
+            throw new ValidationException(String.format("Не удалось добавить вещь: " + item));
         }
-        throw new ValidationException(String.format("Не удалось добавить вещь: " + item));
+
+        return ItemMapper.toItemDto(items.get(item.getId()));
     }
 
-    public ItemDto update(UpdatedItem item, long itemId, long userId) {
+    public ItemDto update(ItemDto item, long itemId, long userId) {
         userService.get(userId);
+        itemExists(itemId);
+        ownsItem(userId, itemId);
+        items.put(itemId, ItemMapper.updateItemFields(items.get(itemId), item));
 
-        if (items.containsKey(itemId)) {
-            items.put(itemId, ItemMapper.updateItemFields(items.get(itemId), item));
-
-            return ItemMapper.toItemDto(items.get(itemId));
-        }
-        throw new NotFoundException(String.format("Вещь с id %d не найдена", itemId));
+        return ItemMapper.toItemDto(items.get(itemId));
     }
 
     public ItemDto get(long itemId) {
-        if (items.containsKey(itemId)) {
-            return ItemMapper.toItemDto(items.get(itemId));
-        }
-        throw new NotFoundException(String.format("Вещь с id %d не найдена", itemId));
+        itemExists(itemId);
+
+        return ItemMapper.toItemDto(items.get(itemId));
     }
 
     public List<ItemDto> getAllByUserId(long userId) {
@@ -80,5 +77,21 @@ public class ItemServiceImpl implements ItemService {
                                         .contains(text.toLowerCase())))
                 .map(ItemMapper::toItemDto)
                 .toList();
+    }
+
+    private void itemExists(long itemId) {
+        if (!items.containsKey(itemId)) {
+            throw new NotFoundException(String.format("Вещь с id %d не найдена", itemId));
+        }
+    }
+
+    private void ownsItem(long userId, long itemId) {
+        if (items.get(itemId).getOwner().getId() != userId) {
+            throw new ValidationException(String.format(
+                    "Вещь с id %d не принадлежит пользователю с id %d",
+                    itemId,
+                    userId
+            ));
+        }
     }
 }

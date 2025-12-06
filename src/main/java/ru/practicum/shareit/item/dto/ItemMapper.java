@@ -15,30 +15,30 @@ public class ItemMapper {
 
     public static Item toItem(ItemDto itemDto) {
         return Item.builder()
-                .id(itemDto.id())
-                .name(itemDto.name())
-                .description(itemDto.description())
-                .available(itemDto.available())
-                .owner(itemDto.owner())
-                .request(itemDto.request())
+                .id(itemDto.getId())
+                .name(itemDto.getName())
+                .description(itemDto.getDescription())
+                .available(itemDto.getAvailable())
+                .owner(itemDto.getOwner())
+                .request(itemDto.getRequest())
                 .build();
     }
 
-    public static Item updateItemFields(Item item, UpdatedItem updatedItem) {
+    public static Item updateItemFields(Item item, ItemDto updatedItem) {
         if (updatedItem.hasName()) {
-            item.setName(updatedItem.name());
+            item.setName(updatedItem.getName());
         }
         if (updatedItem.hasDescription()) {
-            item.setDescription(updatedItem.description());
+            item.setDescription(updatedItem.getDescription());
         }
         if (updatedItem.hasOwner()) {
-            item.setOwner(updatedItem.owner());
+            item.setOwner(updatedItem.getOwner());
         }
         if (updatedItem.hasAvailable()) {
-            item.setAvailable(updatedItem.available());
+            item.setAvailable(updatedItem.getAvailable());
         }
         if (updatedItem.hasRequest()) {
-            item.setRequest(updatedItem.request());
+            item.setRequest(updatedItem.getRequest());
         }
 
         return item;

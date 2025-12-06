@@ -4,11 +4,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.item.dto.ItemDto;
-import ru.practicum.shareit.item.dto.UpdatedItem;
-import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.service.ItemServiceImpl;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  * TODO Sprint add-controllers.
@@ -20,13 +18,13 @@ public class ItemController {
     private final ItemServiceImpl itemService;
 
     @PostMapping
-    public ItemDto save(@Valid @RequestBody Item request,
+    public ItemDto save(@Valid @RequestBody ItemDto request,
                         @RequestHeader("X-Sharer-User-Id") long userId) {
         return itemService.save(request, userId);
     }
 
     @PatchMapping("/{itemId}")
-    public ItemDto update(@Valid @RequestBody UpdatedItem request,
+    public ItemDto update(@RequestBody ItemDto request,
                           @PathVariable("itemId") long itemId, @RequestHeader("X-Sharer-User-Id") long userId) {
         return itemService.update(request, itemId, userId);
     }
@@ -37,12 +35,12 @@ public class ItemController {
     }
 
     @GetMapping
-    public Collection<ItemDto> getAllByUserId(@RequestHeader("X-Sharer-User-Id") long userId) {
+    public List<ItemDto> getAllByUserId(@RequestHeader("X-Sharer-User-Id") long userId) {
         return itemService.getAllByUserId(userId);
     }
 
     @GetMapping("/search")
-    public Collection<ItemDto> getByName(@RequestParam String text) {
+    public List<ItemDto> getByName(@RequestParam String text) {
         return itemService.findByName(text);
     }
 }
