@@ -22,9 +22,9 @@ public class ItemDto {
     @NotNull
     private Boolean available;
 
-    private Long owner_id;
+    private Long ownerId;
 
-    private Long request_id;
+    private Long requestId;
 
     public boolean hasName() {
         return name != null && !name.isEmpty();
@@ -39,10 +39,10 @@ public class ItemDto {
     }
 
     public boolean hasOwner() {
-        return owner_id != null;
+        return ownerId != null;
     }
 
     public boolean hasRequest() {
-        return request_id != null;
+        return requestId != null;
     }
 }

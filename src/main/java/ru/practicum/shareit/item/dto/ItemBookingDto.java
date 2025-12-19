@@ -22,9 +22,9 @@ public class ItemBookingDto {
     @NotNull
     private Boolean available;
 
-    private Long owner_id;
+    private Long ownerId;
 
-    private Long request_id;
+    private Long requestId;
 
     private BookingOutDto lastBooking;
 
