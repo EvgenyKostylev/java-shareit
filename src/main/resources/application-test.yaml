@@ -5,11 +5,11 @@ spring:
   datasource:
     username: user
     password: pass
-    driver-class-name: org.postgresql.Driver
-    url: jdbc:postgresql://localhost:5432/share-it-db
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:file:./db/share-it-db
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: create-drop
     properties:
       hibernate:
         format_sql: true
