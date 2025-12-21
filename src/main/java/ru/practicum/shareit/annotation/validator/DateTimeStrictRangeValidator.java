@@ -1,8 +1,8 @@
-package ru.practicum.shareit.exception.validator;
+package ru.practicum.shareit.annotation.validator;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import ru.practicum.shareit.exception.DateTimeStrictRange;
+import ru.practicum.shareit.annotation.DateTimeStrictRange;
 
 import java.lang.reflect.Field;
 import java.time.LocalDateTime;

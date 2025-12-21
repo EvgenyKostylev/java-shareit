@@ -3,7 +3,7 @@ package ru.practicum.shareit.booking.dto;
 import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import ru.practicum.shareit.exception.DateTimeStrictRange;
+import ru.practicum.shareit.annotation.DateTimeStrictRange;
 
 import java.time.LocalDateTime;
 

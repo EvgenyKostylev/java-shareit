@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.shareit.booking.dto.BookingInDto;
 import ru.practicum.shareit.booking.dto.BookingOutDto;
-import ru.practicum.shareit.booking.dto.BookingToOwnerDto;
 import ru.practicum.shareit.booking.model.State;
 import ru.practicum.shareit.booking.service.BookingService;
 
@@ -27,7 +26,7 @@ public class BookingController {
     }
 
     @PatchMapping("/{bookingId}")
-    public BookingToOwnerDto update(
+    public BookingOutDto update(
             @PathVariable("bookingId") long bookingId,
             @RequestParam boolean approved,
             @RequestHeader("X-Sharer-User-Id") long userId) {
