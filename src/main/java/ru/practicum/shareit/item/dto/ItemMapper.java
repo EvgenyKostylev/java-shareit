@@ -35,7 +35,7 @@ public class ItemMapper {
                 item.getRequest() != null ? item.getRequest().getId() : null,
                 lastBooking != null ? BookingMapper.toBookingOutDto(lastBooking) : null,
                 nextBooking != null ? BookingMapper.toBookingOutDto(nextBooking) : null,
-                comments.stream().map(CommentMapper::toCommentDto).toList()
+                comments != null ? comments.stream().map(CommentMapper::toCommentDto).toList() : null
         );
     }
 
