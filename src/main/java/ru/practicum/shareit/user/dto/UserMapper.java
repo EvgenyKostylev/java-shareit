@@ -12,14 +12,15 @@ public class UserMapper {
     }
 
     public static User toUser(UserDto userDto) {
-        return User.builder()
-                .id(userDto.getId())
-                .name(userDto.getName())
-                .email(userDto.getEmail())
-                .build();
+        User user = new User();
+
+        user.setName(userDto.getName());
+        user.setEmail(userDto.getEmail());
+
+        return user;
     }
 
-    public static User updateUserFields(User user, UserDto updatedUser) {
+    public static UserDto updateUserFields(User user, UserDto updatedUser) {
         if (updatedUser.hasName()) {
             user.setName(updatedUser.getName());
         }
@@ -27,6 +28,6 @@ public class UserMapper {
             user.setEmail(updatedUser.getEmail());
         }
 
-        return user;
+        return toUserDto(user);
     }
 }

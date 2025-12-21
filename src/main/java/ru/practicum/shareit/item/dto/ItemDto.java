@@ -4,8 +4,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
-import ru.practicum.shareit.request.model.ItemRequest;
-import ru.practicum.shareit.user.model.User;
 
 /**
  * TODO Sprint add-controllers.
@@ -24,9 +22,9 @@ public class ItemDto {
     @NotNull
     private Boolean available;
 
-    private User owner;
+    private Long ownerId;
 
-    private ItemRequest request;
+    private Long requestId;
 
     public boolean hasName() {
         return name != null && !name.isEmpty();
@@ -41,10 +39,10 @@ public class ItemDto {
     }
 
     public boolean hasOwner() {
-        return owner != null;
+        return ownerId != null;
     }
 
     public boolean hasRequest() {
-        return request != null;
+        return requestId != null;
     }
 }
