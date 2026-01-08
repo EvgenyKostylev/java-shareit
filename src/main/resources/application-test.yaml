@@ -1,0 +1,31 @@
+spring:
+  sql:
+    init:
+      mode: always
+  datasource:
+    username: user
+    password: pass
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:file:./db/share-it-db
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        format_sql: true
+
+logging:
+  level:
+    org.springframework.orm.jpa: INFO
+    org.springframework.orm.jpa.JpaTransactionManager: DEBUG
+    org.springframework.transaction: INFO
+    org.springframework.transaction.interceptor: TRACE
+    org.hibernate.sql: DEBUG
+    org.hibernate.type: TRACE
+    org.hibernate.orm.jdbc.bind: TRACE
+
+# TODO Append connection to H2 DB
+#spring.datasource.driverClassName
+#spring.datasource.url
+#spring.datasource.username
+#spring.datasource.password
