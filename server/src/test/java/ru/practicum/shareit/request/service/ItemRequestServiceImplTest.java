@@ -31,11 +31,13 @@ public class ItemRequestServiceImplTest {
     @Autowired
     private UserService userService;
 
-    private UserDto user;
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private ItemRepository itemRepository;
+
+    private UserDto user;
 
     @BeforeAll
     public void beforeAll() {

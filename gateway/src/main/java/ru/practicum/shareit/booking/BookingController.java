@@ -50,7 +50,7 @@ public class BookingController {
 
     @PatchMapping("/{bookingId}")
     public ResponseEntity<Object> update(@PathVariable("bookingId") @Positive long bookingId,
-                                         @RequestParam @Positive boolean approved,
+                                         @RequestParam boolean approved,
                                          @RequestHeader("X-Sharer-User-Id") @Positive long userId) {
         log.info("Updating booking {}, approved={}, userId={}", bookingId, approved, userId);
 

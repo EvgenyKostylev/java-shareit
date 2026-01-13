@@ -41,13 +41,15 @@ public class BookingServiceImplTest {
     @Autowired
     private ItemService itemService;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private ItemRepository itemRepository;
+
     private UserDto user;
     private UserDto bookerUser;
     private ItemDto item;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private ItemRepository itemRepository;
 
     @BeforeAll
     public void beforeAll() {

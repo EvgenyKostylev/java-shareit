@@ -21,7 +21,7 @@ public class BookingOutDtoTest {
     @Test
     public void testBookingOutDto() throws Exception {
         LocalDateTime now = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
         BookingOutDto bookingOutDto = new BookingOutDto();
 
         bookingOutDto.setId(1L);

@@ -20,7 +20,7 @@ public class CommentDtoTest {
     @Test
     public void testCommentDto() throws Exception {
         LocalDateTime now = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
         CommentDto commentDto = CommentDto.builder()
                 .id(1L)
                 .text("text")

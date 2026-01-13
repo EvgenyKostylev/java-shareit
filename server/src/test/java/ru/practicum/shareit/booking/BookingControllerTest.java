@@ -41,7 +41,7 @@ public class BookingControllerTest {
     @Autowired
     private ObjectMapper mapper;
 
-    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
     @Test
     public void testBookingSave() throws Exception {

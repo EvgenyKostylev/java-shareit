@@ -20,7 +20,7 @@ public class BookingInDtoTest {
     @Test
     public void testBookingInDto() throws Exception {
         LocalDateTime now = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
         BookingInDto bookingInDto = new BookingInDto();
 
         bookingInDto.setStart(now);

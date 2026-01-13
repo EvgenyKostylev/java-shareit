@@ -20,7 +20,7 @@ public class ItemRequestDtoTest {
     @Test
     public void testItemRequestDto() throws Exception {
         LocalDateTime now = LocalDateTime.now();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
         ItemRequestDto itemRequestDto = ItemRequestDto.builder()
                 .id(1L)
                 .requestor(1L)

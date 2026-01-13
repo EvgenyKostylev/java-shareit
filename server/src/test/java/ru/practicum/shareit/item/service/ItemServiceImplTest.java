@@ -40,12 +40,14 @@ public class ItemServiceImplTest {
     @Autowired
     private ItemRepository itemRepository;
 
-    private static UserDto user;
-    private static UserDto commentingUser;
     @Autowired
     private UserRepository userRepository;
+
     @Autowired
     private CommentRepository commentRepository;
+
+    private static UserDto user;
+    private static UserDto commentingUser;
 
     @BeforeAll
     public void beforeAll() {
