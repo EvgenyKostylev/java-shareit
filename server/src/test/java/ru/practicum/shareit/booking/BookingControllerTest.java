@@ -41,7 +41,7 @@ public class BookingControllerTest {
     @Autowired
     private ObjectMapper mapper;
 
-    private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss");
 
     @Test
     public void testBookingSave() throws Exception {
@@ -227,11 +227,13 @@ public class BookingControllerTest {
 
         List<BookingOutDto> response = List.of(firstResponse, secondResponse);
 
-        when(bookingService.getAllByUserId(State.ALL, 1L))
+        when(bookingService.getAllByUserId(State.ALL, 1L, 0, 10))
                 .thenReturn(response);
 
         mock.perform(get("/bookings")
-                        .header("X-Sharer-User-Id", 1L))
+                        .header("X-Sharer-User-Id", 1L)
+                        .param("from", "0")
+                        .param("size", "10"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()").value(2));
     }
@@ -271,22 +273,26 @@ public class BookingControllerTest {
 
         List<BookingOutDto> response = List.of(firstResponse, secondResponse);
 
-        when(bookingService.getAllByOwnerId(State.ALL, 1L))
+        when(bookingService.getAllByOwnerId(State.ALL, 1L, 0, 10))
                 .thenReturn(response);
 
         mock.perform(get("/bookings/owner")
-                        .header("X-Sharer-User-Id", 1L))
+                        .header("X-Sharer-User-Id", 1L)
+                        .param("from", "0")
+                        .param("size", "10"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()").value(2));
     }
 
     @Test
     public void testBookingsGetByOwnerWithoutItems() throws Exception {
-        when(bookingService.getAllByOwnerId(State.ALL, 1L))
+        when(bookingService.getAllByOwnerId(State.ALL, 1L, 0, 10))
                 .thenThrow(new NotFoundException("not found error"));
 
         mock.perform(get("/bookings/owner")
-                        .header("X-Sharer-User-Id", 1L))
+                        .header("X-Sharer-User-Id", 1L)
+                        .param("from", "0")
+                        .param("size", "10"))
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.error").value("Ошибка данных"))
                 .andExpect(jsonPath("$.description").value("not found error"));

@@ -107,7 +107,7 @@ public class ItemRequestServiceImplTest {
         itemRequestDto.setDescription("second description");
         itemRequestService.save(itemRequestDto, user.getId());
 
-        List<ItemRequestDto> itemRequestsDto = itemRequestService.getUserRequests(user.getId());
+        List<ItemRequestDto> itemRequestsDto = itemRequestService.getUserRequests(user.getId(), 0, 10);
 
         assertEquals(2, itemRequestsDto.size());
         assertEquals(user.getId(), itemRequestsDto.get(0).getRequestor());

@@ -2,6 +2,9 @@ package ru.practicum.shareit.booking.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.booking.dto.BookingInDto;
 import ru.practicum.shareit.booking.dto.BookingMapper;
@@ -23,6 +26,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class BookingServiceImpl implements BookingService {
     private final BookingRepository repository;
     private final ItemService itemService;
@@ -52,7 +56,14 @@ public class BookingServiceImpl implements BookingService {
                     item.getId()));
         }
 
-        return BookingMapper.toBookingOutDto(repository.save(BookingMapper.toBooking(request, item, user)));
+        BookingOutDto bookingOutDto = BookingMapper.toBookingOutDto(repository.save(BookingMapper.toBooking(
+                request,
+                item,
+                user)));
+
+        log.info("Бронирование успешно создано: bookingId={}", bookingOutDto.getId());
+
+        return bookingOutDto;
     }
 
     @Override
@@ -71,11 +82,17 @@ public class BookingServiceImpl implements BookingService {
             throw new ForbiddenException(String.format("Нельзя изменить статус бронирования с id %d", bookingId));
         }
 
+        BookingOutDto bookingOutDto;
+
         if (approved) {
-            return BookingMapper.updateBookingFields(booking, Status.APPROVED);
+            bookingOutDto = BookingMapper.updateBookingFields(booking, Status.APPROVED);
         } else {
-            return BookingMapper.updateBookingFields(booking, Status.REJECTED);
+            bookingOutDto = BookingMapper.updateBookingFields(booking, Status.REJECTED);
         }
+
+        log.info("Статус бронирования bookingId={} изменен на Status={}", booking.getId(), bookingOutDto.getStatus());
+
+        return bookingOutDto;
     }
 
     @Override
@@ -89,75 +106,109 @@ public class BookingServiceImpl implements BookingService {
                     userId));
         }
 
+        log.info("Вывод бронирования bookingId={}", bookingId);
+
         return BookingMapper.toBookingOutDto(booking);
     }
 
     @Override
-    public List<BookingOutDto> getAllByUserId(State state, long userId) {
-        return getBookingsByBookerAndState(userId, state).stream().map(BookingMapper::toBookingOutDto).toList();
+    public List<BookingOutDto> getAllByUserId(State state, long userId, int from, int size) {
+        Pageable pageable = PageRequest.of(from, size);
+        List<Booking> bookings = getBookingsByBookerAndState(userId, state, pageable);
+
+        log.info("Вывод {} бронирований пользователя userId={}", bookings.size(), userId);
+
+        return bookings.stream().map(BookingMapper::toBookingOutDto).toList();
     }
 
     @Override
-    public List<BookingOutDto> getAllByOwnerId(State state, long userId) {
+    public List<BookingOutDto> getAllByOwnerId(State state, long userId, int from, int size) {
         if (repository.countByItemOwnerId(userId) <= 1) {
             throw new NotFoundException(String.format("У пользователя с id %d отсутствуют вещи в аренде", userId));
         }
 
-        return getBookingsByOwnerAndState(userId, state).stream().map(BookingMapper::toBookingOutDto).toList();
+        Pageable pageable = PageRequest.of(from, size);
+        List<Booking> bookings = getBookingsByOwnerAndState(userId, state, pageable);
+
+        log.info("Вывод {} бронирований владельца userId={}", bookings.size(), userId);
+
+        return bookings.stream().map(BookingMapper::toBookingOutDto).toList();
     }
 
     private Booking getBookingById(long bookingId) {
-        return repository.findById(bookingId)
+        Booking booking = repository.findById(bookingId)
                 .orElseThrow(() -> new NotFoundException(String.format(
                         "Бронирование с id %d не найдено",
                         bookingId)));
+
+        log.info("Найдено бронирование bookingId={}", booking.getId());
+
+        return booking;
     }
 
-    private List<Booking> getBookingsByOwnerAndState(long ownerId, State state) {
-        return switch (state) {
+    private List<Booking> getBookingsByOwnerAndState(long ownerId, State state, Pageable pageable) {
+        List<Booking> bookings = switch (state) {
             case CURRENT -> repository.findAllByItemOwnerIdAndContainingDateOrderByStartDesc(
                     ownerId,
                     LocalDateTime.now(),
-                    Status.APPROVED);
+                    Status.APPROVED,
+                    pageable);
             case PAST -> repository.findAllByItemOwnerIdAndStatusAndStartAfterOrderByStartDesc(
                     ownerId,
                     Status.APPROVED,
-                    LocalDateTime.now());
+                    LocalDateTime.now(),
+                    pageable);
             case FUTURE -> repository.findAllByItemOwnerIdAndStatusAndEndBeforeOrderByStartDesc(
                     ownerId,
                     Status.APPROVED,
-                    LocalDateTime.now());
+                    LocalDateTime.now(),
+                    pageable);
             case WAITING -> repository.findAllByItemOwnerIdAndStatusOrderByStartDesc(
                     ownerId,
-                    Status.WAITING);
+                    Status.WAITING,
+                    pageable);
             case REJECTED -> repository.findAllByItemOwnerIdAndStatusOrderByStartDesc(
                     ownerId,
-                    Status.REJECTED);
-            default -> repository.findAllByItemOwnerIdOrderByStartDesc(ownerId);
+                    Status.REJECTED,
+                    pageable);
+            default -> repository.findAllByItemOwnerIdOrderByStartDesc(ownerId, pageable);
         };
+
+        log.info("Найдено {} статуса state={} бронирований владельца userId={}", bookings.size(), state, ownerId);
+
+        return bookings;
     }
 
-    private List<Booking> getBookingsByBookerAndState(long bookerId, State state) {
-        return switch (state) {
+    private List<Booking> getBookingsByBookerAndState(long bookerId, State state, Pageable pageable) {
+        List<Booking> bookings = switch (state) {
             case CURRENT -> repository.findAllByBookerIdAndContainingDateOrderByStartDesc(
                     bookerId,
                     LocalDateTime.now(),
-                    Status.APPROVED);
+                    Status.APPROVED,
+                    pageable);
             case PAST -> repository.findAllByBookerIdAndStatusAndStartAfterOrderByStartDesc(
                     bookerId,
                     Status.APPROVED,
-                    LocalDateTime.now());
+                    LocalDateTime.now(),
+                    pageable);
             case FUTURE -> repository.findAllByBookerIdAndStatusAndEndBeforeOrderByStartDesc(
                     bookerId,
                     Status.APPROVED,
-                    LocalDateTime.now());
+                    LocalDateTime.now(),
+                    pageable);
             case WAITING -> repository.findAllByBookerIdAndStatusOrderByStartDesc(
                     bookerId,
-                    Status.WAITING);
+                    Status.WAITING,
+                    pageable);
             case REJECTED -> repository.findAllByBookerIdAndStatusOrderByStartDesc(
                     bookerId,
-                    Status.REJECTED);
-            default -> repository.findAllByBookerIdOrderByStartDesc(bookerId);
+                    Status.REJECTED,
+                    pageable);
+            default -> repository.findAllByBookerIdOrderByStartDesc(bookerId, pageable);
         };
+
+        log.info("Найдено {} статута state={} бронирований пользователя userId={}", bookings.size(), state, bookerId);
+
+        return bookings;
     }
 }

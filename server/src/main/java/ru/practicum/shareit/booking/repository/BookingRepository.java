@@ -1,5 +1,6 @@
 package ru.practicum.shareit.booking.repository;
 
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -10,11 +11,11 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 public interface BookingRepository extends JpaRepository<Booking, Long> {
-    List<Booking> findAllByBookerIdOrderByStartDesc(long bookerId);
+    List<Booking> findAllByBookerIdOrderByStartDesc(long bookerId, Pageable pageable);
 
     long countByItemOwnerId(long ownerId);
 
-    List<Booking> findAllByItemOwnerIdOrderByStartDesc(long ownerId);
+    List<Booking> findAllByItemOwnerIdOrderByStartDesc(long ownerId, Pageable pageable);
 
     @Query("SELECT b FROM Booking AS b " +
             "WHERE b.item.id IN :itemIds " +
@@ -52,17 +53,20 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
 
     List<Booking> findAllByItemOwnerIdAndStatusOrderByStartDesc(
             long userId,
-            Status status);
+            Status status,
+            Pageable pageable);
 
     List<Booking> findAllByItemOwnerIdAndStatusAndStartAfterOrderByStartDesc(
             long userId,
             Status status,
-            LocalDateTime now);
+            LocalDateTime now,
+            Pageable pageable);
 
     List<Booking> findAllByItemOwnerIdAndStatusAndEndBeforeOrderByStartDesc(
             long userId,
             Status status,
-            LocalDateTime now);
+            LocalDateTime now,
+            Pageable pageable);
 
     @Query("SELECT b FROM Booking AS b " +
             "WHERE b.item.owner.id = :ownerId " +
@@ -71,7 +75,8 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findAllByItemOwnerIdAndContainingDateOrderByStartDesc(
             @Param("ownerId") long ownerId,
             @Param("date") LocalDateTime now,
-            @Param("status") Status status);
+            @Param("status") Status status,
+            Pageable pageable);
 
     @Query("SELECT b FROM Booking AS b " +
             "WHERE b.booker.id = :bookerId " +
@@ -80,21 +85,25 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findAllByBookerIdAndContainingDateOrderByStartDesc(
             @Param("bookerId") long bookerId,
             @Param("date") LocalDateTime now,
-            @Param("status") Status status);
+            @Param("status") Status status,
+            Pageable pageable);
 
     List<Booking> findAllByBookerIdAndStatusAndStartAfterOrderByStartDesc(
             long bookerId,
             Status status,
-            LocalDateTime now);
+            LocalDateTime now,
+            Pageable pageable);
 
     List<Booking> findAllByBookerIdAndStatusAndEndBeforeOrderByStartDesc(
             long bookerId,
             Status status,
-            LocalDateTime now);
+            LocalDateTime now,
+            Pageable pageable);
 
     List<Booking> findAllByBookerIdAndStatusOrderByStartDesc(
             long bookerId,
-            Status status);
+            Status status,
+            Pageable pageable);
 
     @Query("SELECT CASE WHEN COUNT(b) > 0 THEN true ELSE false END FROM Booking b " +
             "WHERE b.item.id = :itemId " +

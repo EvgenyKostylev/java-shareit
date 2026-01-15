@@ -168,7 +168,11 @@ public class BookingServiceImplTest {
         bookingDto.setItemId(item.getId());
 
         BookingOutDto bookingSave = bookingService.save(bookingDto, bookerUser.getId());
-        List<BookingOutDto> bookingsGet = bookingService.getAllByUserId(State.ALL, bookerUser.getId());
+        List<BookingOutDto> bookingsGet = bookingService.getAllByUserId(
+                State.ALL,
+                bookerUser.getId(),
+                0,
+                10);
 
         assertEquals(1, bookingsGet.size());
         assertEquals(bookingSave.getId(), bookingsGet.getFirst().getId());
@@ -184,7 +188,11 @@ public class BookingServiceImplTest {
         bookingDto.setItemId(item.getId());
 
         bookingService.save(bookingDto, bookerUser.getId());
-        List<BookingOutDto> bookingsGet = bookingService.getAllByUserId(State.CURRENT, bookerUser.getId());
+        List<BookingOutDto> bookingsGet = bookingService.getAllByUserId(
+                State.CURRENT,
+                bookerUser.getId(),
+                0,
+                10);
 
         assertEquals(0, bookingsGet.size());
     }
@@ -198,7 +206,11 @@ public class BookingServiceImplTest {
         bookingDto.setItemId(item.getId());
 
         bookingService.save(bookingDto, bookerUser.getId());
-        List<BookingOutDto> bookingsGet = bookingService.getAllByUserId(State.PAST, bookerUser.getId());
+        List<BookingOutDto> bookingsGet = bookingService.getAllByUserId(
+                State.PAST,
+                bookerUser.getId(),
+                0,
+                10);
 
         assertEquals(0, bookingsGet.size());
     }
@@ -212,7 +224,11 @@ public class BookingServiceImplTest {
         bookingDto.setItemId(item.getId());
 
         bookingService.save(bookingDto, bookerUser.getId());
-        List<BookingOutDto> bookingsGet = bookingService.getAllByUserId(State.FUTURE, bookerUser.getId());
+        List<BookingOutDto> bookingsGet = bookingService.getAllByUserId(
+                State.FUTURE,
+                bookerUser.getId(),
+                0,
+                10);
 
         assertEquals(0, bookingsGet.size());
     }
@@ -226,7 +242,11 @@ public class BookingServiceImplTest {
         bookingDto.setItemId(item.getId());
 
         bookingService.save(bookingDto, bookerUser.getId());
-        List<BookingOutDto> bookingsGet = bookingService.getAllByUserId(State.WAITING, bookerUser.getId());
+        List<BookingOutDto> bookingsGet = bookingService.getAllByUserId(
+                State.WAITING,
+                bookerUser.getId(),
+                0,
+                10);
 
         assertEquals(1, bookingsGet.size());
     }
@@ -240,7 +260,11 @@ public class BookingServiceImplTest {
         bookingDto.setItemId(item.getId());
 
         bookingService.save(bookingDto, bookerUser.getId());
-        List<BookingOutDto> bookingsGet = bookingService.getAllByUserId(State.REJECTED, bookerUser.getId());
+        List<BookingOutDto> bookingsGet = bookingService.getAllByUserId(
+                State.REJECTED,
+                bookerUser.getId(),
+                0,
+                10);
 
         assertEquals(0, bookingsGet.size());
     }
@@ -260,7 +284,11 @@ public class BookingServiceImplTest {
         bookingDto.setItemId(itemDto.getId());
         bookingService.save(bookingDto, bookerUser.getId());
 
-        List<BookingOutDto> bookingsGet = bookingService.getAllByOwnerId(State.ALL, user.getId());
+        List<BookingOutDto> bookingsGet = bookingService.getAllByOwnerId(
+                State.ALL,
+                user.getId(),
+                0,
+                10);
 
         assertEquals(2, bookingsGet.size());
     }
@@ -280,7 +308,11 @@ public class BookingServiceImplTest {
         bookingDto.setItemId(itemDto.getId());
         bookingService.save(bookingDto, bookerUser.getId());
 
-        List<BookingOutDto> bookingsGet = bookingService.getAllByOwnerId(State.CURRENT, user.getId());
+        List<BookingOutDto> bookingsGet = bookingService.getAllByOwnerId(
+                State.CURRENT,
+                user.getId(),
+                0,
+                10);
 
         assertEquals(0, bookingsGet.size());
     }
@@ -300,7 +332,11 @@ public class BookingServiceImplTest {
         bookingDto.setItemId(itemDto.getId());
         bookingService.save(bookingDto, bookerUser.getId());
 
-        List<BookingOutDto> bookingsGet = bookingService.getAllByOwnerId(State.PAST, user.getId());
+        List<BookingOutDto> bookingsGet = bookingService.getAllByOwnerId(
+                State.PAST,
+                user.getId(),
+                0,
+                10);
 
         assertEquals(0, bookingsGet.size());
     }
@@ -320,7 +356,11 @@ public class BookingServiceImplTest {
         bookingDto.setItemId(itemDto.getId());
         bookingService.save(bookingDto, bookerUser.getId());
 
-        List<BookingOutDto> bookingsGet = bookingService.getAllByOwnerId(State.FUTURE, user.getId());
+        List<BookingOutDto> bookingsGet = bookingService.getAllByOwnerId(
+                State.FUTURE,
+                user.getId(),
+                0,
+                10);
 
         assertEquals(0, bookingsGet.size());
     }
@@ -340,7 +380,11 @@ public class BookingServiceImplTest {
         bookingDto.setItemId(itemDto.getId());
         bookingService.save(bookingDto, bookerUser.getId());
 
-        List<BookingOutDto> bookingsGet = bookingService.getAllByOwnerId(State.WAITING, user.getId());
+        List<BookingOutDto> bookingsGet = bookingService.getAllByOwnerId(
+                State.WAITING,
+                user.getId(),
+                0,
+                10);
 
         assertEquals(2, bookingsGet.size());
     }
@@ -360,7 +404,11 @@ public class BookingServiceImplTest {
         bookingDto.setItemId(itemDto.getId());
         bookingService.save(bookingDto, bookerUser.getId());
 
-        List<BookingOutDto> bookingsGet = bookingService.getAllByOwnerId(State.REJECTED, user.getId());
+        List<BookingOutDto> bookingsGet = bookingService.getAllByOwnerId(
+                State.REJECTED,
+                user.getId(),
+                0,
+                10);
 
         assertEquals(0, bookingsGet.size());
     }

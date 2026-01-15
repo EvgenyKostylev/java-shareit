@@ -44,8 +44,13 @@ public class ItemClient extends BaseClient {
         return get("/" + itemId, userId);
     }
 
-    public ResponseEntity<Object> getUserItems(long userId) {
-        return get("/users", userId);
+    public ResponseEntity<Object> getUserItems(long userId, int from, int size) {
+        Map<String, Object> parameters = Map.of(
+                "from", from,
+                "size", size
+        );
+
+        return get("/users?from={from}&size={size}", userId, parameters);
     }
 
     public ResponseEntity<Object> getItemsByText(String text) {

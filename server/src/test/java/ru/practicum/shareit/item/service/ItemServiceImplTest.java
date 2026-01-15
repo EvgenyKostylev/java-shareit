@@ -140,7 +140,7 @@ public class ItemServiceImplTest {
         itemDto.setName("second name");
         itemService.saveItem(itemDto, user.getId());
 
-        List<ItemBookingDto> itemBookingsDto = itemService.getAllByUserId(user.getId());
+        List<ItemBookingDto> itemBookingsDto = itemService.getAllByUserId(user.getId(), 0, 10);
 
         assertEquals(2, itemBookingsDto.size());
     }

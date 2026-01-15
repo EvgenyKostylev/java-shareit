@@ -75,11 +75,13 @@ public class ItemRequestControllerTest {
                         .created(LocalDateTime.now())
                         .build());
 
-        when(itemRequestService.getUserRequests(1L))
+        when(itemRequestService.getUserRequests(1L, 0, 10))
                 .thenReturn(response);
 
         mock.perform(get("/requests")
-                        .header("X-Sharer-User-Id", 1L))
+                        .header("X-Sharer-User-Id", 1L)
+                        .param("from", "0")
+                        .param("size", "10"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()").value(2))
                 .andExpect(jsonPath("$[0].requestor").value(1L))

@@ -158,11 +158,13 @@ public class ItemControllerTest {
                         .ownerId(1L)
                         .build());
 
-        when(itemService.getAllByUserId(1L))
+        when(itemService.getAllByUserId(1L, 0, 10))
                 .thenReturn(response);
 
         mock.perform(get("/items")
-                        .header("X-Sharer-User-Id", 1L))
+                        .header("X-Sharer-User-Id", 1L)
+                        .param("from", "0")
+                        .param("size", "10"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.size()").value(2))
                 .andExpect(jsonPath("$[0].name").value("first name"))

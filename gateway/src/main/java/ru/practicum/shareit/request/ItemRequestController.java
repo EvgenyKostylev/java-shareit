@@ -2,6 +2,7 @@ package ru.practicum.shareit.request;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -27,10 +28,16 @@ public class ItemRequestController {
     }
 
     @GetMapping
-    public ResponseEntity<Object> getUserItemRequests(@RequestHeader("X-Sharer-User-Id") @Positive long userId) {
+    public ResponseEntity<Object> getUserItemRequests(@RequestHeader("X-Sharer-User-Id") @Positive long userId,
+                                                      @PositiveOrZero @RequestParam(
+                                                              name = "from",
+                                                              defaultValue = "0") Integer from,
+                                                      @Positive @RequestParam(
+                                                              name = "size",
+                                                              defaultValue = "10") Integer size) {
         log.info("Get userItemRequests for user {}", userId);
 
-        return itemRequestClient.getUserItemRequests(userId);
+        return itemRequestClient.getUserItemRequests(userId, from, size);
     }
 
     @GetMapping("/all")
